@@ -3,15 +3,13 @@
 ## _Core Functionality_
 
 ### Bilinear Transform Engine
-- Implements the standard bilinear transform:  
-  `s = (2/T)*(z-1)/(z+1)`  
+- Implements the standard bilinear transform: $s = (2/T)*(z-1)/(z+1)$  
   where T is the sampling period
 - Handles polynomial substitution for both numerator and denominator
 - Maintains coefficient normalization during transformation
 
 ### Inverse Bilinear Transform
-- Implements the inverse mapping:  
-  `z = (2 + sT)/(2 - sT)`
+- Implements the inverse mapping: $z = (2 + sT)/(2 - sT)$
 - Computes analog poles/zeros from digital poles/zeros
 - Handles special cases (poles at $z = -1$ mapping to $s = ∞$)
 
@@ -25,7 +23,7 @@
 ## _Simulation Logic_
 
 ### Frequency Response Calculation
-- Evaluates $H(e^{jω}) = (Σb_{k}*e^{-jωk})/(Σa_{k} e^{-jωk})$
+- Evaluates $H(e^{jω}) = (Σb_{k}e^{-jωk})/(Σa_{k}e^{-jωk})$
 - Computes magnitude $20log10|H(e^{jω})|$ and phase $∠H(e^{jω}))$
 - Uses uniform sampling from $ω=0$ to $ω=π$
 
@@ -115,7 +113,7 @@
   ```
 
 ### Frequency Response
-- Magnitude: $|H(e^{jω})| = sqrt(Re² + Im²)$
+- Magnitude: $|H(e^{jω})| = sqrt(Re^{2} + Im^{2})$
   ```
   |H(exp(jω))| = sqrt(Re² + Im²)
   ```
@@ -151,7 +149,7 @@
   ```
 ### _Pre-warping Correction_
 **Frequency Mapping:**
-- Analog frequency (Ω) to digital frequency (ω) relationship: `Ω = (2/T)*tan(ωT/2)`
+- Analog frequency (Ω) to digital frequency (ω) relationship: $Ω = (2/T)tan(ωT/2)$
 - Critical frequency adjustment: $Ω_{corrected} = (2/T)*tan((ω_{desired})*T/2)$
 ```
 Ω_corrected = (2/T) * tan(ω_desired*T/2)
@@ -488,7 +486,7 @@ where:
 - $T$ = sampling period  
 
 ### _Frequency Response of Analog Prototypes_
-- **Butterworth**: $|H(jΩ)| = 1/sqrt(1+(Ω/Ω_{c})^{2N}) 
+- **Butterworth**: $|H(jΩ)| = 1/sqrt(1+(Ω/Ω_{c})^{2N})$
   ```
   |H(jΩ)| = 1 / sqrt(1 + (Ω/Ω_c)^(2N))  
   ```
@@ -515,7 +513,137 @@ where:
   $If |Re_{den}| + |Im_{den}| < ε → H(e^{jω}) ≈ 0$  
 - High-frequency roll-off detection for FIR/IIR filters.  
 3. **Fast Evaluation via Horner’s Method**  
-Optimized polynomial evaluation: $H(e^{jω}) = b_{0} + e^{-jω}(b_{1} + e^{-jω}(b_{2} + ... ))/(a_{0} + e^{-jω}(a_{1} + ... ))  
+Optimized polynomial evaluation: $H(e^{jω}) = b_{0} + e^{-jω}(b_{1} + e^{-jω}(b_{2} + ... ))/(a_{0} + e^{-jω}(a_{1} + ... ))$
 Reduces computational complexity from $O(N^{2})$ to $O(N)$.  
+
+---
+
+## ⑤ Inverse Bilinear Transform
+The inverse bilinear transform in the software converts a digital transfer function (in the z-domain) back to an analog transfer function (in the s-domain). It allows users to input a digital transfer function, specify the sampling period (T), and compute the corresponding analog transfer function, along with its poles, zeros, and frequency response. 
+
+- **Input Validation**:
+   - The sampling period T is validated to be positive (T > 0).
+   - The precision is used to format numerical outputs (e.g., coefficients, poles, zeros).
+   - The digital transfer function’s numerator and denominator coefficients are retrieved and normalized (removing leading zeros).
+- **Inverse Bilinear Transform**:
+   - The transform uses the substitution $z = (2 + sT)/(2 - sT)$, where s is the analog domain variable and T is the sampling period.
+   - The digital transfer function $H(z) = N(z) / D(z)$ is transformed by substituting z with the above expression to obtain $H(s) = N(s)/D(s)$.
+- **Polynomial Computation**:
+   - The numerator $N(z)$ and denominator $D(z)$ are polynomials in $z^{-1}$ (e.g., $N(z) = b_0 + b_1*z^{-1} + ...$).
+   - Substituting $z = (2 + sT)/(2 - sT)$ into each term $z^{-k}$ requires computing the resulting s-domain polynomial.
+   - For a term $z^{-k}$, the substitution becomes:
+     - $z^{-k} = ((2 - sT) / (2 + sT))^{k}$
+     - This is expanded using the binomial theorem to express $(2 - sT)^{k}$ and $(2 + sT)^{-k}$ as polynomials in s.
+   - The software computes the coefficients of the resulting numerator and denominator polynomials in s.
+- **Pole-Zero Calculation**:
+   - The roots of the numerator (zeros) and denominator (poles) of H(s) are computed using `PolynomialRootFinder.java`.
+   - Special handling is applied for poles/zeros at z = -1, which map to s = infinity in the analog domain.
+- **Frequency Response**:
+   - The analog frequency response is computed by evaluating H(s) at s = jω, where w is the angular frequency (rad/s).
+   - The magnitude (in dB) and phase are plotted in the `AnalogFrequencyResponsePanel`.
+    
+### _Model_
+The inverse bilinear transform is based on the following key equation:
+
+- **Bilinear Transform (Forward)**: $s = (2/T) * (z - 1) / (z + 1)$
+- **Inverse Bilinear Transform**: Solving for z in terms of s:
+  $- z = (2 + sT) / (2 - sT)$
+
+For a digital transfer function $H(z) = N(z) / D(z)$, where:
+- $N(z) = b_0 + b_1*z^{-1} + b_2*z^{-2} + ... + b_M*z^{-M}$
+- $D(z) = a_0 + a_1*z^{-1} + a_2*z^{-2} + ... + a_N*z^{-N}$
+
+The inverse transform substitutes $z = (2 + sT)/(2 - sT)$ into H(z):
+
+1. **Substitution for $z^{-k}$**:
+   - $z^{-k} = ((2 - sT) / (2 + sT))^{k}$
+   - Let $u = sT$, so $z = (2 + u) / (2 - u)$, and $z^{-1} = (2 - u) / (2 + u)$.
+   - For $z^{-k}$, compute $((2 - u) / (2 + u))^{k}$:
+     - Numerator: $(2 - u)^{k} = sum_{i=0}^{k} binomial(k, i) * 2^{k-i)} * (-u)^{i}$
+     - Denominator: $(2 + u)^{-k} = (2 + u)^{k} = sum_{j=0}^{k} binomial(k, j) * 2^{k-j} * u^j$ 
+     - Combine to form a polynomial in u (and thus s).
+2. **Polynomial Expansion**:
+   - Each term $b_{k}*z^{-k}$ in N(z) becomes a polynomial in s after substitution.
+   - Similarly, each term $a_{k}*z^{-k}$ in D(z) becomes a polynomial in s.
+   - The software aggregates these terms to form the numerator and denominator polynomials of H(s).
+3. **Normalization**:
+   - The resulting polynomials are normalized by dividing by the leading coefficient of the denominator to ensure a monic denominator (leading coefficient = 1).
+   - Leading zeros are removed (coefficients < 1e-10).
+4. **Pole-Zero Mapping**:
+   - A pole at $z = p$ in the z-domain maps to $s = (2/T)*(p - 1)/(p + 1)$.
+   - If $p = -1$, the pole maps to s = infinity, which is handled by reducing the polynomial degree.
+   - Zeros are mapped similarly.
+5. **Frequency Response**:
+   - For H(s), evaluate at s = j*w:
+     - Magnitude = $|H(j*w)| = sqrt(Re[H(j*w)]^{2} + Im[H(j*w)]^{2})$
+     - Magnitude in dB = $20 * log10(|H(j*w)|)$
+     - Phase = $atan2(Im[H(j*w)], Re[H(j*w)])$
+6. **Example**
+For a digital transfer function $H(z) = (1 + 0.5z^{-1}) / (1 - 0.3z^{-1})$ with $T = 1$:
+- Substitute $z = (2 + s)/(2 - s)$.
+- Numerator: $1 + 0.5 * (2 - s) / (2 + s) = (2 + s + 0.5 * (2 - s)) / (2 + s) = (3 + 0.5s) / (2 + s)$.
+- Denominator: $1 - 0.3 * (2 - s) / (2 + s) = (2 + s - 0.3 * (2 - s)) / (2 + s) = (1.4 + 1.3s) / (2 + s)$.
+- $H(s) = (3 + 0.5s)/(1.4 + 1.3s)$ after normalization.
+- Poles and zeros are computed, and the frequency response is plotted.
+
+---
+
+## ⑥ Stability Feedback
+The stability feedback evaluates the stability of a digital filter by analyzing its pole locations and Nyquist plot. It determines whether a digital filter is stable (all poles inside the unit circle) and provides visual feedback through a pole-zero plot and a Nyquist plot.
+
+### _Stability Verification_
+   - The `StabilityVerification` class is instantiated with the input `SymbolicTransferFunction`.
+   - The `isStable()` method checks if all poles have magnitude less than 1 - EPSILON (EPSILON = 1e-10).
+   - Poles and zeros are computed using `computePoles()` and `computeZeros()`, which call `findRoots()`.
+### _Pole and Zero Computation_
+   - For a polynomial $P(z) = a_{0}*z^{n} + a_1*z^{n-1} + ... + an$, find roots by solving $P(z) = 0$.
+   - Laguerre’s method iteratively refines a root estimate x using:
+     - $P(x)$ = evaluate polynomial at x
+     - $P'(x)$ = first derivative: $P'(x) = n*a_0*z^{n-1} + (n-1)*a_1*z^{n-2} + ... + a_{n-1}
+     - $P''(x)$ = second derivative: $P''(x) = n*(n-1)*a_0*z^{n-2} + (n-1)*(n-2)*a_1*z^{n-3} + ...$
+     - $G = P'(x) / P(x)$
+     - $H = G^2 - P''(x) / P(x)$
+     - Correction = $n/(G ± sqrt((n-1)*(n*H - G^2)))$
+     - Update x = x - Correction
+   - After finding a root, deflate the polynomial: $P(z) = (z - r) * Q(z)$, where Q(z) is computed via synthetic division (though the current implementation has issues with complex roots).
+### Nyquist Plot:
+   - Evaluate H(z) at z = e^{jω}:
+     - $H(e^{jω}) = N(e^{jω}) / D(e^{jω})$
+     - $N(e^{jω}) = sum(b_k * cos(ωk) - j*sin(ωk))$
+     - $D(e^{jω}) = sum(a_k * cos(ωk) - j*sin(ωk))$
+   - Plot $Re[H(e^{jω})]$ vs. $Im[H(e^{jω})]$ for ω from 0 to 2π.
+   - Stability is assessed by checking if the curve encircles the point (-1, 0). For a stable system with no open-loop poles outside the unit circle, the curve should not encircle (-1, 0).
+### Pole-Zero Plot
+   - Poles are roots of $D(z) = 0$, zeros are roots of $N(z) = 0$.
+   - Plot each pole/zero as a point $(Re[z], Im[z])$ in the z-plane.
+   - The unit circle is drawn as $x^2 + y^2 = 1$.
+### _Stability Criterion_
+   - A digital filter is stable if all poles of $H(z) = N(z) / D(z)$ lie inside the unit circle, i.e., $|p_i| < 1$ for all poles $p_i$.
+   - The software uses $|p_i| < 1 - EPSILON$ to ensure strict stability, where $EPSILON = 1e-10$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
