@@ -87,10 +87,9 @@
 - Implemented with direct form I structure
 
 ### 4. Pole-Zero Analysis
-- Stability criterion: |$z_i$| < 1 for all poles
-- Transfer function factorization:  
-  $H(z) = K Π(z - z_i)/Π(z - p_i)$
+- Stability criterion: $|z_i|$ < 1 for all poles
+- Transfer function factorization: $H(z) = K Π(z - z_i)/Π(z - p_i)$
 
 ### 5. Frequency Response
-- Magnitude: |H(e^jω)| = sqrt(Re² + Im²)
-- Phase: ∠H(e^jω) = atan2(Im, Re)
+- Magnitude: $|H(e^jω)| = sqrt(Re² + Im²)$
+- Phase: $∠H(e^jω) = atan2(Im, Re)$
