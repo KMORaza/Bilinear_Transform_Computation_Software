@@ -31,7 +31,7 @@
 
 ### Time Domain Simulation
 - Solves difference equation:  
-  `y[n] = (Σbₖ x[n-k] - Σaₖ y[n-k])/a₀`
+  $y[n] = (Σbₖ x[n-k] - Σaₖ y[n-k])/a₀$
 - Implements:
   - Impulse response (`x[0]=1`, `x[n]=0` for `n>0`)
   - Step response (`x[n]=1` for all `n`)
