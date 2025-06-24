@@ -25,7 +25,7 @@
 ## Simulation Logic
 
 ### 1. Frequency Response Calculation
-- Evaluates $H(e^jω) = (Σb_k e^-jωk)/(Σa_k e^-jωk)$
+- Evaluates $H(e^jω) = (Σ$b_k$ $e^-jωk$)/(Σa_k e^-jωk)$
 - Computes magnitude (20log10|H(e^jω)|) and phase (∠H(e^jω))
 - Uses uniform sampling from ω=0 to ω=π
 
