@@ -205,10 +205,9 @@ a₂s² → a₂(2/T)²(z-1)²/(z+1)² → a₂(4/T²)(z²-2z+1)/(z²+2z+1)
 
 **Algorithm**
 
-1. Input desired digital frequency ω_d
-2. Compute pre-warped analog frequency:
-   Ω_a = (2/T)tan(ω_dT/2)
-3. Design analog filter at Ω_a
+1. Input desired digital frequency $ω_d$
+2. Compute pre-warped analog frequency: `Ω_a = (2/T)tan(ω_dT/2)`
+3. Design analog filter at $Ω_a$
 4. Apply bilinear transform
 
 **Mathematical Justification:**
