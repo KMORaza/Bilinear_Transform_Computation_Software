@@ -72,27 +72,53 @@
 
 ### Analog Filter Prototypes
 - Butterworth: $|H(jΩ)|² = 1/(1 + (Ω/Ω_c)^2N)$
+  ```
+  |H(jΩ)|² = 1/(1 + (Ω/Ω_c)^2N)
+  ```
 - Chebyshev I: $|H(jΩ)|² = 1/(1 + ε²T_N²(Ω/Ω_c))$
+  ```
+  |H(jΩ)|² = 1/(1 + ε²T_N²(Ω/Ω_c))
+  ```
 - Chebyshev II: $|H(jΩ)|² = 1/(1 + 1/(ε²T_N²(Ω_s/Ω)))$
+  ```
+  |H(jΩ)|² = 1/(1 + 1/(ε²T_N²(Ω_s/Ω)))
+  ```
 - Elliptic: Uses Jacobi elliptic functions
 - Bessel: Polynomials with maximally flat delay
 
 ### Bilinear Transform Mathematics
 - Frequency warping relationship: $Ω=(2/T)*tan(ω/2)$
+  ```
+  Ω=(2/T)*tan(ω/2)
+  ```
 - Pre-warping correction:  $Ω_c=(2/T)*tan(ω_c/2)$
+  ```
+  Ω_c=(2/T)*tan(ω_c/2)
+  ```
 
 ### Difference Equations
-- Standard form:  
-  $Σa_k y[n-k] = Σb_k x[n-k]$
+- Standard form: $Σa_k y[n-k] = Σb_k x[n-k]$
+  ```
+  Σa_k y[n-k] = Σb_k x[n-k]
+  ```
 - Implemented with direct form I structure
 
 ### Pole-Zero Analysis
 - Stability criterion: $|z_i|$ < 1 for all poles
 - Transfer function factorization: $H(z) = K Π(z - z_i)/Π(z - p_i)$
+  ```
+  H(z) = K Π(z - z_i)/Π(z - p_i)
+  ```
 
 ### Frequency Response
 - Magnitude: $|H(e^{jω})| = sqrt(Re² + Im²)$
+  ```
+  |H(exp(jω))| = sqrt(Re² + Im²)
+  ```
 - Phase: $∠H(e^{jω}) = atan2(Im, Re)$
+  ```
+  ∠H(exp(jω)) = atan2(Im, Re)
+  ```
 
 ---
 
@@ -116,8 +142,10 @@
 ### _Pre-warping Correction_
 **Frequency Mapping:**
 - Analog frequency (Ω) to digital frequency (ω) relationship: `Ω = (2/T)*tan(ωT/2)`
-- Critical frequency adjustment:
-  `Ω_corrected = (2/T) * tan(ω_desired*T/2)`
+- Critical frequency adjustment: $Ω_{corrected} = (2/T)*tan((ω_{desired})*T/2)$
+```
+Ω_corrected = (2/T) * tan(ω_desired*T/2)
+```
 
 **Implementation:**
 1. Compute pre-warped analog cutoff: `Ωₐ = (2/T)tan(ωₙT/2)`
@@ -125,20 +153,20 @@
 3. Apply bilinear transform
 
 ### _Butterworth Filters_
-**Analog Prototype:** 
+**Analog Prototype:** $|H(jΩ)|² = 1 / [1 + (Ω/Ω_c)^(2N)]$
 ```
 |H(jΩ)|² = 1 / [1 + (Ω/Ω_c)^(2N)]
 ```
 **Design Steps:**
 1. Calculate required order N from specifications
-2. Determine analog poles:
+2. Determine analog poles: $s_k = Ω_c * e^{(j[π/2 + (2k+1)π/2N])}$, , $k=0,1,...N-1$
    ```
    s_k = Ω_c * exp(j[π/2 + (2k+1)π/2N]), k=0,1,...N-1
    ```
 4. Convert to digital via bilinear transform
 
 ### _Chebyshev Type I Filters_
-**Analog Prototype:**
+**Analog Prototype:** $|H(jΩ)|² = 1 / [1 + ε²T_N²(Ω/Ω_c)]$
 ```
 |H(jΩ)|² = 1 / [1 + ε²T_N²(Ω/Ω_c)]
 ```
@@ -150,7 +178,7 @@ where $T_N$ is Chebyshev polynomial of 1st kind
 3. Apply bilinear transform
 
 ### _Chebyshev Type II Filters_
-**Analog Prototype:**
+**Analog Prototype:** $|H(jΩ)|² = 1 / [1 + 1/(ε²T_N²(Ω_s/Ω))]$
 ```
 |H(jΩ)|² = 1 / [1 + 1/(ε²T_N²(Ω_s/Ω))]
 ```
@@ -160,7 +188,7 @@ where $T_N$ is Chebyshev polynomial of 1st kind
 3. Transform to digital domain
 
 ### _Elliptic Filters_
-**Analog Prototype:**
+**Analog Prototype:** $|H(jΩ)|² = 1 / [1 + ε²R_N²(Ω,L)]$
 ```
 |H(jΩ)|² = 1 / [1 + ε²R_N²(Ω,L)]
 ```
@@ -199,18 +227,16 @@ a₂s² → a₂(2/T)²(z-1)²/(z+1)² → a₂(4/T²)(z²-2z+1)/(z²+2z+1)
 **Verification Steps:**
 1. Map analog poles (s-plane left half-plane)
    → Digital poles (inside unit circle)
-2. Check all poles satisfy |z_i| < 1
+2. Check all poles satisfy $|z_i|$ < 1
 3. Verify no pole-zero cancellations outside unit circle
 
 ### _Frequency Warping Compensation_
 
 **Algorithm**
-
 1. Input desired digital frequency $ω_d$
-2. Compute pre-warped analog frequency: `Ω_a = (2/T)tan(ω_dT/2)`
+2. Compute pre-warped analog frequency: $Ω_a = (2/T)tan((ω_d)*T/2)$
 3. Design analog filter at $Ω_a$
 4. Apply bilinear transform
-
 **Mathematical Justification:**
 - Bilinear transform creates nonlinear frequency mapping
 - Pre-warping ensures critical frequencies align correctly
@@ -254,7 +280,7 @@ where
 - z = Z-transform variable
 
 ### _Frequency Warping Relationship_
-The transform creates a non-linear frequency mapping between analog (Ω) and digital (ω) frequencies: `Ω = (2/T)*tan(ωT/2)`
+The transform creates a non-linear frequency mapping between analog (Ω) and digital (ω) frequencies: **$Ω = (2/T)*tan(ωT/2)$**
 
 1. Preserves stability (maps left-half s-plane to unit z-circle)
 2. Avoids aliasing through non-linear frequency compression
