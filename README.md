@@ -47,7 +47,7 @@
   `τ(ω) = -d∠H(e^jω)/dω`
 - Numerically approximated using finite differences
 
-## Code Structure
+## _Code Structure_
 
 ### Mathematical Core
 - Polynomial operations (root finding, multiplication)
@@ -71,35 +71,25 @@
 ## _Physics/Mathematical Models_
 
 ### Analog Filter Prototypes
-- Butterworth:
-  
-  $|H(jΩ)|² = 1/(1 + (Ω/Ω_c)^2N)$
-  
-- Chebyshev I:
-  ```
-  |H(jΩ)|² = 1/(1 + ε²T_N²(Ω/Ω_c))
-  ```
-- Chebyshev II:
-  ```
-  |H(jΩ)|² = 1/(1 + 1/(ε²T_N²(Ω_s/Ω)))
-  ```
+- Butterworth: $|H(jΩ)|² = 1/(1 + (Ω/Ω_c)^2N)$
+- Chebyshev I: $|H(jΩ)|² = 1/(1 + ε²T_N²(Ω/Ω_c))$
+- Chebyshev II: $|H(jΩ)|² = 1/(1 + 1/(ε²T_N²(Ω_s/Ω)))$
 - Elliptic: Uses Jacobi elliptic functions
 - Bessel: Polynomials with maximally flat delay
 
 ### 2. Bilinear Transform Mathematics
-- Frequency warping relationship: `Ω = (2/T)*tan(ω/2)`
-- Pre-warping correction:  
-  Ω_c = (2/T) tan(ω_c/2)
+- Frequency warping relationship: $Ω = (2/T)tan(ω/2)$
+- Pre-warping correction:  $Ω_c = (2/T)tan(ω_c/2)$
 
 ### 3. Difference Equations
 - Standard form:  
-  Σa_k y[n-k] = Σb_k x[n-k]
+  $Σa_k y[n-k] = Σb_k x[n-k]$
 - Implemented with direct form I structure
 
 ### 4. Pole-Zero Analysis
-- Stability criterion: |z_i| < 1 for all poles
+- Stability criterion: |$z_i$| < 1 for all poles
 - Transfer function factorization:  
-  H(z) = K Π(z - z_i)/Π(z - p_i)
+  $H(z) = K Π(z - z_i)/Π(z - p_i)$
 
 ### 5. Frequency Response
 - Magnitude: |H(e^jω)| = sqrt(Re² + Im²)
