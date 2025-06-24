@@ -91,8 +91,8 @@
 - Transfer function factorization: $H(z) = K Π(z - z_i)/Π(z - p_i)$
 
 ### Frequency Response
-- Magnitude: $|H(e^jω)| = sqrt(Re² + Im²)$
-- Phase: $∠H(e^jω) = atan2(Im, Re)$
+- Magnitude: $|H(exp(jω))| = sqrt(Re² + Im²)$
+- Phase: $∠H(exp(jω)) = atan2(Im, Re)$
 
 ---
 
@@ -117,7 +117,7 @@
 **Frequency Mapping:**
 - Analog frequency (Ω) to digital frequency (ω) relationship: `Ω = (2/T)*tan(ωT/2)`
 - Critical frequency adjustment:
-  $Ω_corrected = (2/T) * tan(ω_desired*T/2)$
+  `Ω_corrected = (2/T) * tan(ω_desired*T/2)`
 
 **Implementation:**
 1. Compute pre-warped analog cutoff: `Ωₐ = (2/T)tan(ωₙT/2)`
