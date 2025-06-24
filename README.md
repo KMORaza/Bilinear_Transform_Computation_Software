@@ -77,19 +77,157 @@
 - Elliptic: Uses Jacobi elliptic functions
 - Bessel: Polynomials with maximally flat delay
 
-### 2. Bilinear Transform Mathematics
+### Bilinear Transform Mathematics
 - Frequency warping relationship: $Ω=(2/T)*tan(ω/2)$
 - Pre-warping correction:  $Ω_c=(2/T)*tan(ω_c/2)$
 
-### 3. Difference Equations
+### Difference Equations
 - Standard form:  
   $Σa_k y[n-k] = Σb_k x[n-k]$
 - Implemented with direct form I structure
 
-### 4. Pole-Zero Analysis
+### Pole-Zero Analysis
 - Stability criterion: $|z_i|$ < 1 for all poles
 - Transfer function factorization: $H(z) = K Π(z - z_i)/Π(z - p_i)$
 
-### 5. Frequency Response
+### Frequency Response
 - Magnitude: $|H(e^jω)| = sqrt(Re² + Im²)$
 - Phase: $∠H(e^jω) = atan2(Im, Re)$
+
+---
+
+## Analog to Digital Filter Mapping
+
+### Bilinear Transform Method
+**Algorithm Steps:**
+1. Receive analog coefficients (aₙ, bₙ) and sampling period T
+2. For each coefficient in numerator and denominator:
+   - Apply substitution: `s ← (2/T)(z-1)/(z+1)`
+   - Expand polynomial terms
+3. Combine like terms to form digital transfer function
+4. Normalize coefficients so a₀ = 1
+
+**Key Equations:**
+- Transform equation: `s = (2/T) * (z-1)/(z+1)`
+- Resulting digital transfer function:
+  ```
+  H(z) = H(s)|ₛ=(2/T)(z-1)/(z+1)
+  ```
+### Pre-warping Correction
+**Frequency Mapping:**
+- Analog frequency (Ω) to digital frequency (ω) relationship: `Ω = (2/T)*tan(ωT/2)`
+- Critical frequency adjustment:
+  $Ω_corrected = (2/T) * tan(ω_desired*T/2)$
+
+**Implementation:**
+1. Compute pre-warped analog cutoff: `Ωₐ = (2/T)tan(ωₙT/2)`
+2. Design analog filter at Ωₐ
+3. Apply bilinear transform
+
+### Butterworth Filters
+**Analog Prototype:** $|H(jΩ)|² = 1 / [1 + (Ω/Ω_c)^(2N)]$
+**Design Steps:**
+1. Calculate required order N from specifications
+2. Determine analog poles:
+   $s_k = Ω_c * exp(j[π/2 + (2k+1)π/2N])$, k=0,1,...N-1
+3. Convert to digital via bilinear transform
+
+### Chebyshev Type I Filters
+**Analog Prototype:**
+|H(jΩ)|² = 1 / [1 + ε²T_N²(Ω/Ω_c)]
+where T_N is Chebyshev polynomial of 1st kind
+
+**Design Steps:**
+1. Compute ε from ripple specification
+2. Calculate poles on ellipse in s-plane
+3. Apply bilinear transform
+
+### 3. Chebyshev Type II Filters
+**Analog Prototype:**
+|H(jΩ)|² = 1 / [1 + 1/(ε²T_N²(Ω_s/Ω))]
+
+**Design Steps:**
+1. Determine stopband frequency Ω_s
+2. Compute poles and zeros
+3. Transform to digital domain
+
+### 4. Elliptic Filters
+**Analog Prototype:**
+|H(jΩ)|² = 1 / [1 + ε²R_N²(Ω,L)]
+
+**Special Characteristics:**
+- Uses Jacobi elliptic functions
+- Equiripple in both passband and stopband
+- Requires calculation of elliptic integrals
+
+### 5. Bessel Filters
+**Analog Prototype:**
+H(s) = 1/B_N(s)
+where B_N is Bessel polynomial
+
+**Key Feature:**
+- Maximally flat group delay
+- Nonlinear phase to digital conversion
+
+## Coefficient Calculation
+
+### Polynomial Transformation
+**Numerical Method:**
+1. Initialize arrays for numerator/denominator
+2. For each term aₙsⁿ:
+   - Expand [(z-1)/(z+1)]ⁿ
+   - Multiply by (2/T)ⁿ coefficient
+   - Distribute across polynomial
+3. Combine like terms
+
+**Example for 2nd Order:**
+a₂s² → a₂(2/T)²(z-1)²/(z+1)²
+→ a₂(4/T²)(z²-2z+1)/(z²+2z+1)
+
+### Stability Preservation
+**Verification Steps:**
+1. Map analog poles (s-plane left half-plane)
+   → Digital poles (inside unit circle)
+2. Check all poles satisfy |z_i| < 1
+3. Verify no pole-zero cancellations outside unit circle
+
+## Frequency Warping Compensation
+
+### Algorithm Implementation
+1. Input desired digital frequency ω_d
+2. Compute pre-warped analog frequency:
+   Ω_a = (2/T)tan(ω_dT/2)
+3. Design analog filter at Ω_a
+4. Apply bilinear transform
+
+**Mathematical Justification:**
+- Bilinear transform creates nonlinear frequency mapping
+- Pre-warping ensures critical frequencies align correctly
+
+## Practical Considerations
+
+### Numerical Stability
+- Uses normalized polynomial forms
+- Implements careful root finding with:
+  - Laguerre's method
+  - Polynomial deflation
+  - Residual checking
+
+### Coefficient Scaling
+- Normalizes transfer function so a₀ = 1
+- Prevents numerical overflow/underflow
+- Maintains precision in fixed-point implementations
+
+## Validation Methods
+
+### Frequency Response Verification
+1. Compare analog prototype response at key frequencies
+2. Verify digital response matches at:
+   - DC (ω=0)
+   - Nyquist (ω=π/T)
+   - Critical frequencies
+
+### Time Domain Validation
+1. Impulse response invariance check
+2. Step response steady-state verification
+3. Comparison with known stable filters
