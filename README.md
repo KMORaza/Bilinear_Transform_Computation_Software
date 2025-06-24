@@ -241,7 +241,7 @@ a₂s² → a₂(2/T)²(z-1)²/(z+1)² → a₂(4/T²)(z²-2z+1)/(z²+2z+1)
 
 ---
 
-# ② Core Bilinear Transform 
+## ② Core Bilinear Transform 
 
 ### _Bilinear Transform Definition_
 The bilinear transform converts an analog transfer function H(s) to a digital transfer function H(z) using the substitution:
