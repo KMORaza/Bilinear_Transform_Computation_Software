@@ -190,10 +190,11 @@ where $B_N$ is Bessel polynomial
    - Distribute across polynomial
 3. Combine like terms
 
-**Example for 2nd Order:**
+**Example for 2nd Order:** $a₂s² → a₂(2/T)²(z-1)²/(z+1)² → a₂(4/T²)(z²-2z+1)/(z²+2z+1)$
 ```
 a₂s² → a₂(2/T)²(z-1)²/(z+1)² → a₂(4/T²)(z²-2z+1)/(z²+2z+1)
 ```
+
 ### _Stability Preservation_
 **Verification Steps:**
 1. Map analog poles (s-plane left half-plane)
