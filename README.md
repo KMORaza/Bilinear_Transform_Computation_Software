@@ -4,14 +4,14 @@
 
 ### 1. Bilinear Transform Engine
 - Implements the standard bilinear transform:  
-  $s = (2/T)*(z-1)/(z+1)$  
+  s = (2/T) * (z-1)/(z+1)  
   where T is the sampling period
 - Handles polynomial substitution for both numerator and denominator
 - Maintains coefficient normalization during transformation
 
 ### 2. Inverse Bilinear Transform
 - Implements the inverse mapping:  
-  $z = (2+sT)/(2-sT)$
+  z = (2 + sT)/(2 - sT)
 - Computes analog poles/zeros from digital poles/zeros
 - Handles special cases (poles at z = -1 mapping to s = ∞)
 
@@ -25,8 +25,8 @@
 ## Simulation Logic
 
 ### 1. Frequency Response Calculation
-- Evaluates $H(e^jω) = (Σb_k exp(-jωk))/(Σa_k exp(-jωk))$
-- Computes magnitude (20log10|$H(exp(jω))|$) and phase ($∠H(exp(jω))$)
+- Evaluates H(e^jω) = (Σ$b_k$ e^-jωk)/(Σ$a_k$ e^-jωk)
+- Computes magnitude (20log10|H(e^jω)|) and phase (∠H(e^jω))
 - Uses uniform sampling from ω=0 to ω=π
 
 ### 2. Time Domain Simulation
