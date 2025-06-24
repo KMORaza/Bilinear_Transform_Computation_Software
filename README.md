@@ -91,8 +91,8 @@
 - Transfer function factorization: $H(z) = K Π(z - z_i)/Π(z - p_i)$
 
 ### Frequency Response
-- Magnitude: $|H(exp(jω))| = sqrt(Re² + Im²)$
-- Phase: $∠H(exp(jω)) = atan2(Im, Re)$
+- Magnitude: $|H(e^{jω})| = sqrt(Re² + Im²)$
+- Phase: $∠H(e^{jω}) = atan2(Im, Re)$
 
 ---
 
