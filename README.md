@@ -125,45 +125,56 @@
 3. Apply bilinear transform
 
 ### Butterworth Filters
-**Analog Prototype:** $|H(jΩ)|² = 1 / [1 + (Ω/Ω_c)^(2N)]$
+**Analog Prototype:** 
+```
+|H(jΩ)|² = 1 / [1 + (Ω/Ω_c)^(2N)]
+```
 **Design Steps:**
 1. Calculate required order N from specifications
 2. Determine analog poles:
-   $s_k = Ω_c * exp(j[π/2 + (2k+1)π/2N])$, k=0,1,...N-1
-3. Convert to digital via bilinear transform
+   ```
+   s_k = Ω_c * exp(j[π/2 + (2k+1)π/2N]), k=0,1,...N-1
+   ```
+4. Convert to digital via bilinear transform
 
 ### Chebyshev Type I Filters
 **Analog Prototype:**
+```
 |H(jΩ)|² = 1 / [1 + ε²T_N²(Ω/Ω_c)]
-where T_N is Chebyshev polynomial of 1st kind
+```
+where $T_N$ is Chebyshev polynomial of 1st kind
 
 **Design Steps:**
 1. Compute ε from ripple specification
 2. Calculate poles on ellipse in s-plane
 3. Apply bilinear transform
 
-### 3. Chebyshev Type II Filters
+### Chebyshev Type II Filters
 **Analog Prototype:**
+```
 |H(jΩ)|² = 1 / [1 + 1/(ε²T_N²(Ω_s/Ω))]
-
+```
 **Design Steps:**
 1. Determine stopband frequency Ω_s
 2. Compute poles and zeros
 3. Transform to digital domain
 
-### 4. Elliptic Filters
+### Elliptic Filters
 **Analog Prototype:**
+```
 |H(jΩ)|² = 1 / [1 + ε²R_N²(Ω,L)]
-
+```
 **Special Characteristics:**
 - Uses Jacobi elliptic functions
 - Equiripple in both passband and stopband
 - Requires calculation of elliptic integrals
 
-### 5. Bessel Filters
+### Bessel Filters
 **Analog Prototype:**
+```
 H(s) = 1/B_N(s)
-where B_N is Bessel polynomial
+```
+where $B_N$ is Bessel polynomial
 
 **Key Feature:**
 - Maximally flat group delay
