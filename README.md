@@ -13,7 +13,7 @@
 - Implements the inverse mapping:  
   `z = (2 + sT)/(2 - sT)`
 - Computes analog poles/zeros from digital poles/zeros
-- Handles special cases (poles at `z = -1` mapping to `s = ∞`)
+- Handles special cases (poles at $z = -1$ mapping to $s = ∞$)
 
 ### Filter Design Methods
 - Butterworth: Maximally flat magnitude response
@@ -30,11 +30,13 @@
 - Uses uniform sampling from `ω=0` to `ω=π`
 
 ### Time Domain Simulation
-- Solves difference equation:  
-  $y[n] = (Σb_k x[n-k] - Σa_k y[n-k])/a₀$
+- Solves difference equation: $y[n] = (Σb_k x[n-k] - Σa_k y[n-k])/a₀$
+  ```
+  y[n] = (Σb_k x[n-k] - Σa_k y[n-k])/a₀
+  ```
 - Implements:
-  - Impulse response (`x[0]=1`, `x[n]=0` for `n>0`)
-  - Step response (`x[n]=1` for all `n`)
+  - Impulse response ($x[0]=1$, $x[n]=0$ for $n>0$)
+  - Step response ($x[n]=1$ for all $n$)
   - Custom input sequences
 
 ### Pole-Zero Analysis
@@ -43,7 +45,7 @@
 - Stability determined by |poles| < 1
 
 ### Group Delay Calculation
-- Computes as negative derivative of phase:  
+- Computes as negative derivative of phase: $τ(ω) = -d∠H(e^{jω})/dω$
   `τ(ω) = -d∠H(e^jω)/dω`
 - Numerically approximated using finite differences
 
@@ -71,11 +73,11 @@
 ## _Physics/Mathematical Models_
 
 ### Analog Filter Prototypes
-- Butterworth: $|H(jΩ)|² = 1/(1 + (Ω/Ω_c)^2N)$
+- Butterworth: $|H(jΩ)|^{2} = 1/(1+(Ω/Ω_c)^{2N})$
   ```
   |H(jΩ)|² = 1/(1 + (Ω/Ω_c)^2N)
   ```
-- Chebyshev I: $|H(jΩ)|² = 1/(1 + ε²T_N²(Ω/Ω_c))$
+- Chebyshev I: $|H(jΩ)|^{2} = 1/(1+ε^{2}*T_{N}^{2}(Ω/Ω_{c}))$
   ```
   |H(jΩ)|² = 1/(1 + ε²T_N²(Ω/Ω_c))
   ```
@@ -126,16 +128,22 @@
 
 ### _Bilinear Transform Method_
 **Algorithm Steps:**
-1. Receive analog coefficients (aₙ, bₙ) and sampling period T
+1. Receive analog coefficients ($a_{n}, b_{n}$) and sampling period T
 2. For each coefficient in numerator and denominator:
-   - Apply substitution: `s ← (2/T)(z-1)/(z+1)`
+   - Apply substitution: $s ← (2/T)(z-1)/(z+1)$
+     ```
+     s ← (2/T)(z-1)/(z+1)
+     ```
    - Expand polynomial terms
 3. Combine like terms to form digital transfer function
-4. Normalize coefficients so a₀ = 1
+4. Normalize coefficients so $a_{0}$ = 1
 
 **Key Equations:**
-- Transform equation: `s = (2/T) * (z-1)/(z+1)`
-- Resulting digital transfer function:
+- Transform equation: $s = (2/T)*(z-1)/(z+1)$
+  ```
+  s = (2/T)*(z-1)/(z+1)
+  ```
+- Resulting digital transfer function: $H(z) = H(s)|_{s}=(2/T)(z-1)/(z+1)$
   ```
   H(z) = H(s)|ₛ=(2/T)(z-1)/(z+1)
   ```
@@ -148,12 +156,15 @@
 ```
 
 **Implementation:**
-1. Compute pre-warped analog cutoff: `Ωₐ = (2/T)tan(ωₙT/2)`
-2. Design analog filter at Ωₐ
-3. Apply bilinear transform
+1. Compute pre-warped analog cutoff: $Ω_a = (2/T)tan(ω_{n}T/2)$
+   ```
+   Ωₐ = (2/T)tan(ωₙT/2)
+   ```
+3. Design analog filter at Ωₐ
+4. Apply bilinear transform
 
 ### _Butterworth Filters_
-**Analog Prototype:** $|H(jΩ)|² = 1 / [1 + (Ω/Ω_c)^(2N)]$
+**Analog Prototype:** $|H(jΩ)|^{2} = 1 / [1 + (Ω/Ω_{c})^{2N}]$
 ```
 |H(jΩ)|² = 1 / [1 + (Ω/Ω_c)^(2N)]
 ```
@@ -166,7 +177,7 @@
 4. Convert to digital via bilinear transform
 
 ### _Chebyshev Type I Filters_
-**Analog Prototype:** $|H(jΩ)|² = 1 / [1 + ε²T_N²(Ω/Ω_c)]$
+**Analog Prototype:** $|H(jΩ)|^{2} = 1 / [1 + ε^{2}T_{N}^{2}(Ω/Ω_{c})]$
 ```
 |H(jΩ)|² = 1 / [1 + ε²T_N²(Ω/Ω_c)]
 ```
@@ -178,7 +189,7 @@ where $T_N$ is Chebyshev polynomial of 1st kind
 3. Apply bilinear transform
 
 ### _Chebyshev Type II Filters_
-**Analog Prototype:** $|H(jΩ)|² = 1 / [1 + 1/(ε²T_N²(Ω_s/Ω))]$
+**Analog Prototype:** $|H(jΩ)|^{2} = 1 / [1 + 1/(ε^{2}T_{N}^{2}(Ω_s/Ω))]$
 ```
 |H(jΩ)|² = 1 / [1 + 1/(ε²T_N²(Ω_s/Ω))]
 ```
@@ -188,7 +199,7 @@ where $T_N$ is Chebyshev polynomial of 1st kind
 3. Transform to digital domain
 
 ### _Elliptic Filters_
-**Analog Prototype:** $|H(jΩ)|² = 1 / [1 + ε²R_N²(Ω,L)]$
+**Analog Prototype:** $|H(jΩ)|^{2} = 1 / [1 + ε^{2}R_{N}^{2}(Ω,L)]$
 ```
 |H(jΩ)|² = 1 / [1 + ε²R_N²(Ω,L)]
 ```
@@ -218,7 +229,7 @@ where $B_N$ is Bessel polynomial
    - Distribute across polynomial
 3. Combine like terms
 
-**Example for 2nd Order:** $a₂s² → a₂(2/T)²(z-1)²/(z+1)² → a₂(4/T²)(z²-2z+1)/(z²+2z+1)$
+**Example for 2nd Order:** $a_{2}s^{2} → a_{2}(2/T)^{2}(z-1)^{2}/(z+1)^{2} → a^{2}(4/T^{2})(z^{2}-2z+1)/(z^{2}+2z+1)$
 ```
 a₂s² → a₂(2/T)²(z-1)²/(z+1)² → a₂(4/T²)(z²-2z+1)/(z²+2z+1)
 ```
@@ -249,7 +260,7 @@ a₂s² → a₂(2/T)²(z-1)²/(z+1)² → a₂(4/T²)(z²-2z+1)/(z²+2z+1)
   - Residual checking
 
 ### _Coefficient Scaling_
-- Normalizes transfer function so a₀ = 1
+- Normalizes transfer function so $a_0$ = 1
 - Prevents numerical overflow/underflow
 - Maintains precision in fixed-point implementations
 
@@ -270,7 +281,7 @@ a₂s² → a₂(2/T)²(z-1)²/(z+1)² → a₂(4/T²)(z²-2z+1)/(z²+2z+1)
 ## ② Core Bilinear Transform 
 
 ### _Bilinear Transform Definition_
-The bilinear transform converts an analog transfer function H(s) to a digital transfer function H(z) using the substitution:
+The bilinear transform converts an analog transfer function H(s) to a digital transfer function H(z) using the substitution: $s = (2/T)*(z - 1)/(z + 1)$
 ```
 s = (2/T) * (z - 1)/(z + 1)
 ```
@@ -286,23 +297,23 @@ The transform creates a non-linear frequency mapping between analog (Ω) and dig
 2. Avoids aliasing through non-linear frequency compression
 3. One-to-one mapping between analog and digital domains
 ### _Direct Transformation Method_
-1. **Input**: Analog transfer function coefficients `[aₙ, aₙ₋₁,...a₀]`, `[bₘ, bₘ₋₁,...b₀]`
+1. **Input**: Analog transfer function coefficients $[a_{n}, a{n-1},...a_{0}]$, $[b_{m}, b_{m-1},...b_{0}]`
 2. **Substitution**:
-   - Replace each 's' term with `(2/T)(z-1)/(z+1)`
-   - Multiply through by `(z+1)^N` to clear denominators
+   - Replace each 's' term with $(2/T)(z-1)/(z+1)$
+   - Multiply through by $(z+1)^{N}$ to clear denominators
 3. **Normalization**:
    - Collect like terms in z
    - Divide all coefficients by leading denominator coefficient
 ### _Polynomial Transformation_
 **Numerical Method:**
 1. Initialize arrays for numerator/denominator
-2. For each term $aₙsⁿ$:
-   - Expand `[(z-1)/(z+1)]ⁿ`
-   - Multiply by `(2/T)ⁿ` coefficient
+2. For each term $a_{n}s^{n}$:
+   - Expand $[(z-1)/(z+1)]^{n}$
+   - Multiply by $(2/T)^{n}$ coefficient
    - Distribute across polynomial
 3. Combine like terms
 
-**Example for 2nd Order:**
+**Example for 2nd Order:** $a_{2}s^{2} → a_{2}(2/T)^{2}(z-1)^{2}/(z+1)^{2} → a^{2}(4/T^{2})(z^{2}-2z+1)/(z^{2}+2z+1)
 ```
 a₂s² → a₂(2/T)²(z-1)²/(z+1)² → a₂(4/T²)(z²-2z+1)/(z²+2z+1)
 ```
@@ -314,7 +325,7 @@ a₂s² → a₂(2/T)²(z-1)²/(z+1)² → a₂(4/T²)(z²-2z+1)/(z²+2z+1)
 Pre-warping compensates for the non-linear frequency mapping that occurs during the bilinear transform. The bilinear transform maps the entire analog frequency range (0 to ∞) into the digital frequency range (0 to π) in a non-linear fashion.
 
 ### _Frequency Warping_
-The fundamental frequency mapping equation:
+The fundamental frequency mapping equation: $ω_{d} = 2*arctan(Ω_{a}*T/2)$
 ```
 ω_d = 2 * arctan(Ω_a * T/2)
 ```
@@ -324,7 +335,7 @@ where:
 - $T$ = sampling period (seconds)
 
 ### _Pre-Warping Correction Formula_
-To maintain critical frequencies, we use:
+To maintain critical frequencies, we use: $Ω_{a} = (2/T)*tan(ω_{d}/2)$
 ```
 Ω_a = (2/T) * tan(ω_d/2)
 ```
@@ -357,24 +368,24 @@ function scalePolynomial(coeffs, scale):
 ```
 
 ### _Frequency Scaling Principle_
-Each term in the transfer function H(s) is scaled according to its power of s:
+Each term in the transfer function H(s) is scaled according to its power of s: $H'(s) = H(s/α)$
 ```
 H'(s) = H(s/α)
 ```
 where α is the scaling factor $Ω_a/ω_d$
 
 ### _Coefficient Transformation_
-For a general polynomial term:
+For a general polynomial term: $a_{n}s^{n} → a_{n}*(s/α)^{n} = (a_{n}/α^{n})*s^{n}$
 ```
 a_n*s^n → a_n*(s/α)^n = (a_n/α^n)*s^n
 ```
 
 ### _Transfer Function Transformation_
-Given original analog transfer function:
+Given original analog transfer function: $H_{a}(s) = (Σb_{k}*s^{k})/(Σa_{k}*s^{k})$
 ```
 H_a(s) = (Σb_k*s^k)/(Σa_k*s^k)
 ```
-The pre-warped version becomes:
+The pre-warped version becomes: $H'_{a}(s) = (Σ(b_{k}/α^{k})*s^{k})/(Σ(a_{k}/α^{k})*s^{k})$
 ```
 H'_a(s) = (Σ(b_k/α^k)*s^k)/(Σ(a_k/α^k)*s^k)
 ```
@@ -393,7 +404,7 @@ H'_a(s) = (Σ(b_k/α^k)*s^k)/(Σ(a_k/α^k)*s^k)
 
 ### _Verification_
 - Frequency Verification
-Check that:
+Check that: $H_{d}(e^{jω_{c}}) ≈ H_{a}(jΩ_{c})$
 ```
 H_d(e^(jω_c)) ≈ H_a(jΩ_c)
 ```
@@ -416,11 +427,11 @@ where $ω_c$ is the desired digital cutoff frequency and $Ω_c$ is the pre-warpe
 The frequency response analysis module computes the magnitude and phase response of digital filters derived via the bilinear transform. It evaluates the transfer function H(z) along the unit circle (z = e^(jω)) to determine how the filter affects different frequency components.  
 
 ### _Evaluate Transfer Function on Unit Circle_
-Given a discrete-time transfer function:  
+Given a discrete-time transfer function: $H(z) = (b_{0} + b_{1}z^{-1} + ... + b_{n}z^{-n))/(a_{0} + a_{1}z^{-1} + ... + a_{m}z^{-m})$
 ```
 H(z) = (b₀ + b₁z⁻¹ + ... + bₙz⁻ⁿ) / (a₀ + a₁z⁻¹ + ... + aₘz⁻ᵐ)  
 ```
-Substitute `z = e^(jω)`:  
+Substitute $z = e^{jω}$:  $H(e^{jω}) = (Σb_{k}e^{-jωk})/(Σa_{k}e^{-jωk})$
 ```
 H(e^(jω)) = (Σbₖ e^(-jωk))/(Σaₖ e^(-jωk))  
 ```
@@ -430,38 +441,42 @@ where:
 
 ### _Compute Real and Imaginary Components_  
 Decompose numerator and denominator into real/imaginary parts:  
+- $Re_{num} = Σb_{k}*cos(ωk), Im_{num} = -Σb_{k}*sin(ωk)$
+- Re_{den} = Σa_{k}*cos(ωk), Im_{den} = -Σa_{k}*sin(ωk)$
 ```
 Re_num = Σbₖ*cos(ωk), Im_num = -Σbₖ*sin(ωk) (Numerator)
 Re_den = Σaₖ*cos(ωk), Im_den = -Σaₖ*sin(ωk) (Denominator)  
 ```
 
 ### _Calculate Magnitude Response_  
+$|H(e^{jω})| = sqrt((Re_{num}^{2} + Im_{num}^{2})/(Re_{den}^{2} + Im_{den}^{2}))$
 ```
 |H(e^(jω))| = sqrt((Re_num² + Im_num²)/(Re_den² + Im_den²))  
 ```
-Convert to decibels (dB):  
+Convert to decibels (dB): $20*log10(|H(e^{jω})|)$
 ```
 Magnitude (dB) = 20 log10(|H(e^(jω))|)  
 ```
 
 ### _Calculate Phase Response_
+$∠H(e^{jω}) = atan2(Im_{num}, Re_{num}) - atan2(Im_{den}, Re_{den})$
 ```
 ∠H(e^(jω)) = atan2(Im_num, Re_num) - atan2(Im_den, Re_den)  
 ```
 Phase is unwrapped to avoid 2π jumps.  
 
 ### _Compute Group Delay_  
-Group delay measures phase distortion:  
+Group delay measures phase distortion: $τ(ω) = -d∠H(e^{jω})/dω$
 ```
 τ(ω) = -d∠H(e^(jω)) / dω  
 ```
-Numerically approximated using finite differences:  
+Numerically approximated using finite differences: $τ(ω) ≈ -[∠H(ω + Δω) - ∠H(ω - Δω)]/(2Δω)$
 ```
 τ(ω) ≈ -[∠H(ω + Δω) - ∠H(ω - Δω)] / (2Δω)  
 ```
 
 ### _Bilinear Transform Pre-Warping_  
-To counteract frequency warping, critical frequencies are pre-warped:  
+To counteract frequency warping, critical frequencies are pre-warped: $Ω_{analog} = (2/T)tan(ω_{digital}/2)$
 ```
 Ω_analog = (2/T) tan(ω_digital / 2)  
 ```
@@ -471,16 +486,16 @@ where:
 - $T$ = sampling period  
 
 ### _Frequency Response of Analog Prototypes_
-- **Butterworth**:  
+- **Butterworth**: $|H(jΩ)| = 1/sqrt(1+(Ω/Ω_{c})^{2N}) 
   ```
   |H(jΩ)| = 1 / sqrt(1 + (Ω/Ω_c)^(2N))  
   ```
-- **Chebyshev Type I**:  
+- **Chebyshev Type I**: $|H(jΩ)| = 1/sqrt(1 + ε^{2}T_{N}^{2}(Ω/Ω_{c)})$
   ```
   |H(jΩ)| = 1 / sqrt(1 + ε² T_N²(Ω/Ω_c))  
   ```
   where $T_N$ = Chebyshev polynomial of order N.  
-- **Chebyshev Type II**:  
+- **Chebyshev Type II**: $|H(jΩ)| = 1/sqrt(1 + 1/(ε^{2}T_{N}^{2}(Ω_{s}/Ω)))$
   ```
   |H(jΩ)| = 1 / sqrt(1 + 1/(ε² T_N²(Ω_s/Ω)))  
   ```
@@ -495,15 +510,10 @@ where:
 
 2. **Numerical Stability Handling**  
 - Near-zero denominators:  
-  ```
-  If |Re_den| + |Im_den| < ε → H(e^(jω)) ≈ 0  
-  ```
+  $If |Re_{den}| + |Im_{den}| < ε → H(e^{jω}) ≈ 0$  
 - High-frequency roll-off detection for FIR/IIR filters.  
 3. **Fast Evaluation via Horner’s Method**  
-Optimized polynomial evaluation:  
-```
-H(e^(jω)) = b₀ + e^(-jω)(b₁ + e^(-jω)(b₂ + ... ))/(a₀ + e^{-jω}(a₁ + ... ))  
-```
-Reduces computational complexity from $O(N²)$ to $O(N)$.  
+Optimized polynomial evaluation: $H(e^{jω}) = b_{0} + e^{-jω}(b_{1} + e^{-jω}(b_{2} + ... ))/(a_{0} + e^{-jω}(a_{1} + ... ))  
+Reduces computational complexity from $O(N^{2})$ to $O(N)$.  
 
 
