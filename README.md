@@ -78,8 +78,8 @@
 - Bessel: Polynomials with maximally flat delay
 
 ### 2. Bilinear Transform Mathematics
-- Frequency warping relationship: $Ω = (2/T)tan(ω/2)$
-- Pre-warping correction:  $Ω_c = (2/T)tan(ω_c/2)$
+- Frequency warping relationship: $Ω=(2/T)*tan(ω/2)$
+- Pre-warping correction:  $Ω_c=(2/T)*tan(ω_c/2)$
 
 ### 3. Difference Equations
 - Standard form:  
