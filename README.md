@@ -96,7 +96,7 @@
 
 ---
 
-## Analog to Digital Filter Mapping
+## ① Analog to Digital Filter Mapping
 
 ### Bilinear Transform Method
 **Algorithm Steps:**
@@ -155,7 +155,7 @@ where $T_N$ is Chebyshev polynomial of 1st kind
 |H(jΩ)|² = 1 / [1 + 1/(ε²T_N²(Ω_s/Ω))]
 ```
 **Design Steps:**
-1. Determine stopband frequency Ω_s
+1. Determine stopband frequency $Ω_s$
 2. Compute poles and zeros
 3. Transform to digital domain
 
@@ -164,6 +164,7 @@ where $T_N$ is Chebyshev polynomial of 1st kind
 ```
 |H(jΩ)|² = 1 / [1 + ε²R_N²(Ω,L)]
 ```
+
 **Special Characteristics:**
 - Uses Jacobi elliptic functions
 - Equiripple in both passband and stopband
@@ -242,3 +243,47 @@ a₂s² → a₂(2/T)²(z-1)²/(z+1)²
 1. Impulse response invariance check
 2. Step response steady-state verification
 3. Comparison with known stable filters
+
+---
+
+# ② Core Bilinear Transform 
+
+### Bilinear Transform Definition
+The bilinear transform converts an analog transfer function H(s) to a digital transfer function H(z) using the substitution:
+```
+s = (2/T) * (z - 1)/(z + 1)
+```
+where
+- T = sampling period (seconds)
+- s = Laplace domain complex frequency
+- z = Z-transform variable
+
+### Frequency Warping Relationship
+The transform creates a non-linear frequency mapping between analog (Ω) and digital (ω) frequencies: `Ω = (2/T)*tan(ωT/2)`
+### Critical Features
+1. Preserves stability (maps left-half s-plane to unit z-circle)
+2. Avoids aliasing through non-linear frequency compression
+3. One-to-one mapping between analog and digital domains
+### Direct Transformation Method
+1. **Input**: Analog transfer function coefficients `[aₙ, aₙ₋₁,...a₀]`, `[bₘ, bₘ₋₁,...b₀]`
+2. **Substitution**:
+   - Replace each 's' term with `(2/T)(z-1)/(z+1)`
+   - Multiply through by `(z+1)^N` to clear denominators
+3. **Normalization**:
+   - Collect like terms in z
+   - Divide all coefficients by leading denominator coefficient
+### Polynomial Transformation
+**Numerical Method:**
+1. Initialize arrays for numerator/denominator
+2. For each term $aₙsⁿ$:
+   - Expand `[(z-1)/(z+1)]ⁿ`
+   - Multiply by `(2/T)ⁿ` coefficient
+   - Distribute across polynomial
+3. Combine like terms
+
+**Example for 2nd Order:**
+```
+a₂s² → a₂(2/T)²(z-1)²/(z+1)² → a₂(4/T²)(z²-2z+1)/(z²+2z+1)
+```
+
+
