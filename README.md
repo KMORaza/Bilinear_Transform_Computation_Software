@@ -25,12 +25,12 @@
 ## _Simulation Logic_
 
 ### Frequency Response Calculation
-- Evaluates `H(e^jω) = (Σbₖ e^-jωk)/(Σaₖ e^-jωk)`
-- Computes magnitude (`20log10|H(e^jω)|`) and phase (`∠H(e^jω))`
-- Uses uniform sampling from `ω=0` to `ω=π`
+- Evaluates $H(e^{jω}) = (Σb_{k}*e^{-jωk})/(Σa_{k} e^{-jωk})$
+- Computes magnitude $20log10|H(e^{jω})|$ and phase $∠H(e^{jω}))$
+- Uses uniform sampling from $ω=0$ to $ω=π$
 
 ### Time Domain Simulation
-- Solves difference equation: $y[n] = (Σb_k x[n-k] - Σa_k y[n-k])/a₀$
+- Solves difference equation: $y[n] = (Σb_k x[n-k] - Σa_k y[n-k])/a_{0}$
   ```
   y[n] = (Σb_k x[n-k] - Σa_k y[n-k])/a₀
   ```
@@ -46,7 +46,9 @@
 
 ### Group Delay Calculation
 - Computes as negative derivative of phase: $τ(ω) = -d∠H(e^{jω})/dω$
-  `τ(ω) = -d∠H(e^jω)/dω`
+  ```
+  τ(ω) = -d∠H(e^jω)/dω
+  ```
 - Numerically approximated using finite differences
 
 ## _Code Structure_
@@ -223,9 +225,9 @@ where $B_N$ is Bessel polynomial
 ### _Polynomial Transformation_
 **Numerical Method:**
 1. Initialize arrays for numerator/denominator
-2. For each term $aₙsⁿ$:
-   - Expand `[(z-1)/(z+1)]ⁿ`
-   - Multiply by $(2/T)ⁿ$ coefficient
+2. For each term $a_{n}s^{n}$:
+   - Expand $[(z-1)/(z+1)]^{n}$
+   - Multiply by $(2/T)^{n}$ coefficient
    - Distribute across polynomial
 3. Combine like terms
 
@@ -291,13 +293,13 @@ where
 - z = Z-transform variable
 
 ### _Frequency Warping Relationship_
-The transform creates a non-linear frequency mapping between analog (Ω) and digital (ω) frequencies: **$Ω = (2/T)*tan(ωT/2)$**
+The transform creates a non-linear frequency mapping between analog (Ω) and digital (ω) frequencies: $Ω = (2/T)*tan(ωT/2)$
 
 1. Preserves stability (maps left-half s-plane to unit z-circle)
 2. Avoids aliasing through non-linear frequency compression
 3. One-to-one mapping between analog and digital domains
 ### _Direct Transformation Method_
-1. **Input**: Analog transfer function coefficients $[a_{n}, a{n-1},...a_{0}]$, $[b_{m}, b_{m-1},...b_{0}]`
+1. **Input**: Analog transfer function coefficients $[a_{n}, a{n-1},...a_{0}]$, $[b_{m}, b_{m-1},...b_{0}]$
 2. **Substitution**:
    - Replace each 's' term with $(2/T)(z-1)/(z+1)$
    - Multiply through by $(z+1)^{N}$ to clear denominators
