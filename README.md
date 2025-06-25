@@ -738,7 +738,12 @@ The Time Domain Simulation serves the following purposes:
   - Feedback term: $Σ_{k=1}^N a_{k} * y[n-k]$
   - $y[n] = (feedforward - feedback) / a_{0}$
 
+---
 
+## Screenshots
+![](https://raw.githubusercontent.com/KMORaza/Bilinear_Transform_Computation_Software/refs/heads/main/Bilinear%20Transform%20Computation%20Software/009/screenshots/screenshot.png)
+
+---
 
 
 
