@@ -29,6 +29,7 @@
 
 ### Time Domain Simulation
 - Solves difference equation: $y[n] = (Σb_k x[n-k] - Σa_k y[n-k])/a_{0}$
+  
   ```
   y[n] = (Σb_k x[n-k] - Σa_k y[n-k])/a₀
   ```
@@ -74,14 +75,17 @@
 
 ### Analog Filter Prototypes
 - Butterworth: $|H(jΩ)|^{2} = 1/(1+(Ω/Ω_c)^{2N})$
+  
   ```
   |H(jΩ)|² = 1/(1 + (Ω/Ω_c)^2N)
   ```
 - Chebyshev I: $|H(jΩ)|^{2} = 1/(1+ε^{2}*T_{N}^{2}(Ω/Ω_{c}))$
+  
   ```
   |H(jΩ)|² = 1/(1 + ε²T_N²(Ω/Ω_c))
   ```
 - Chebyshev II: $|H(jΩ)|^{2} = 1/(1 + 1/(ε^{2}*T_{N}^{2}(Ω_{s}/Ω)))$
+  
   ```
   |H(jΩ)|² = 1/(1 + 1/(ε²T_N²(Ω_s/Ω)))
   ```
