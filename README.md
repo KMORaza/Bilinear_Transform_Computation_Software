@@ -390,7 +390,7 @@ Given original analog transfer function: $H_{a}(s) = (Σb_{k}*s^{k})/(Σa_{k}*s^
 ```
 H_a(s) = (Σb_k*s^k)/(Σa_k*s^k)
 ```
-The pre-warped version becomes: $H'_{a}(s) = (Σ(b_{k}/α^{k})*s^{k})/(Σ(a_{k}/α^{k})*s^{k})$
+The pre-warped version becomes: $H^{'}_{a}(s) = (Σ(b_{k}/α^{k})*s^{k})/(Σ(a_{k}/α^{k})*s^{k})$
 ```
 H'_a(s) = (Σ(b_k/α^k)*s^k)/(Σ(a_k/α^k)*s^k)
 ```
