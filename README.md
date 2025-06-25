@@ -604,8 +604,8 @@ The stability feedback evaluates the stability of a digital filter by analyzing 
    - For a polynomial $P(z) = a_{0}z^{n} + a_{1}z^{n-1} + ... + an$, find roots by solving $P(z) = 0$.
    - Laguerre’s method iteratively refines a root estimate x using:
      - $P(x)$ = evaluate polynomial at x
-     - $P'(x)$ = first derivative: $P'(x) = n*a_0*z^{n-1} + (n-1)*a_1*z^{n-2} + ... + a_{n-1}
-     - $P''(x)$ = second derivative: $P''(x) = n*(n-1)*a_0*z^{n-2} + (n-1)*(n-2)*a_1*z^{n-3} + ...$
+     - $P'(x)$ = first derivative: $P'(x) = na_{0}z^{n-1} + (n-1)a_{1}z^{n-2} + ... + a_{n-1}$
+     - $P''(x)$ = second derivative: $P''(x) = n(n-1)a_{0}z^{n-2} + (n-1)(n-2)a_{1}z^{n-3} +$ $...$
      - $G = P'(x) / P(x)$
      - $H = G^2 - P''(x) / P(x)$
      - Correction = $n/(G ± sqrt((n-1)*(nH - G^2)))$
