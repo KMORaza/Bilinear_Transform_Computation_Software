@@ -677,7 +677,7 @@ the digital transfer function is $H(z) = N(z)/D(z)$ where $N(z)$ and $D(z)$ are 
 ```
 s^k = ((2/T) * (z-1)/(z+1))^k = (2/T)^k * (z-1)^k / (z+1)^k
 ```
-  - **Numerator of the term**: $(z-1)^{k} = sum_{i=0}^{k} [binomial(k, i) * z^{i}*(-1)^{k-i}]$.
+  - **Numerator of the term**: $(z-1)^{k} = Σ_{i=0}^{k} [binomial(k, i) * z^{i}*(-1)^{k-i}]$.
   - **Denominator of the term**: $(z+1)^{k}$, which contributes to the common denominator.
   - **Binomial coefficient**: $binomial(n, k) = n!/(k!*(n-k)!)$.
 
@@ -728,11 +728,16 @@ The Time Domain Simulation serves the following purposes:
   - $B(z)$ is the numerator polynomial: $b(M) * z^M + b(M-1) * z^{M-1} + ... + b(0)$.
   - $A(z)$ is the denominator polynomial: $a(N) * z^N + a(N-1) * z^{N-1} + ... + a(0)$.
   - $b(k)$ and $a(k)$ are the coefficients, and $a(N)$ is the leading denominator coefficient (assumed non-zero).
-
-- The filter’s output y(n) at time step n is calculated as: $y[n] = (1/a_{0}) * (sum_{k=0}^{M} b_{k} * x[n-k] - sum_{k=1}^{N} a_{k} * y[n-k])$
-  
-
-
+- The filter’s output $y(n)$ at time step n is calculated as: $y[n] = (1/a_{0}) * (Σ_{k=0}^{M} b_{k} * x[n-k] - Σ_{k=1}^{N} a_{k} * y[n-k])$
+  - $a_{0}$ is the constant term of the denominator (leading coefficient after normalization).
+  - $b_{k}$ are the numerator coefficients.
+  - $a_{k}$ are the denominator coefficients (excluding $a_{0}$).
+  - $x[n-k]$ are past and current input samples.
+  - $y[n-k]$ are past output samples.
+- For each sample $n$ ($0$ to $NUM_SAMPLES-1$):
+  - Feedforward term: $Σ_{k=0}^M b_{k} * x[n-k]$
+  - Feedback term: $Σ_{k=1}^N a_{k} * y[n-k]$
+  - $y[n] = (feedforward - feedback) / a_{0}$
 
 
 
