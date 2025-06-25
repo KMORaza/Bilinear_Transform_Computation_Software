@@ -745,8 +745,11 @@ The Time Domain Simulation serves the following purposes:
 
 ---
 
+_Ich fühlte ein Licht des Glücks, nachdem ich die Entwicklung der Software abgeschlossen hatte. Es war keine leichte Aufgabe, die Software von Grund auf neu zu schreiben und die notwendigen mathematischen und physikalischen Modelle, Berechnungen und Algorithmen zu integrieren. Während der Entwicklung war ich ziemlich gestresst, hatte Kopfschmerzen und überanstrengte Augen, aber trotzdem habe ich es geschafft.
+Diese Software könnte Fehler aufweisen und verbesserungsbedürftig sein, daher ist sie möglicherweise nicht 100% perfekt. Aber wissen Sie was? Kein von Menschenhand geschaffenes Ding ist vollkommen perfekt._
 
-
+_I felt a sense of happiness after I finished developing the software. It wasn't an easy work to write the software from scratch and integration of necessary mathematics & physics models, calculations, and algorithms. While developing this software, I felt quite stressed alongside headache and strained eyes, despite this I managed to develop the software.
+This software might have flaws and may need further enhancements, so this software may not be 100% perfect. But guess what? No man-made thing is completely perfect._
 
 
 
