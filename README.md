@@ -671,7 +671,7 @@ H(s) = N(s) / D(s) = (b_m s^m + b_(m-1) s^(m-1) + ... + b_0) / (a_n s^n + a_(n-1
 ```
 the digital transfer function is $H(z) = N(z)/D(z)$ where $N(z)$ and $D(z)$ are polynomials in $z$ derived by substituting $s = (2/T) * (z-1)/(z+1)$ into $N(s)$ and $D(s)$.
 
-- For a term $s^k$ in the polynomial: $s^{k} = ((2/T)*(z-1)/(z+1))^{k} = (2/T)^{k}*(z-1)^{k}/(z+1)^{k}$
+- For a term $s^k$ in the polynomial: $s^{k} = ((2/T)(z-1)/(z+1))^{k} = (2/T)^{k}*(z-1)^{k}/(z+1)^{k}$
 
 ```
 s^k = ((2/T) * (z-1)/(z+1))^k = (2/T)^k * (z-1)^k / (z+1)^k
