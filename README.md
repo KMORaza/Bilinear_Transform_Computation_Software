@@ -317,7 +317,7 @@ The transform creates a non-linear frequency mapping between analog (Ω) and dig
    - Distribute across polynomial
 3. Combine like terms
 
-**Example for 2nd Order:** $a_{2}s^{2} → a_{2}(2/T)^{2}(z-1)^{2}/(z+1)^{2} → a^{2}(4/T^{2})(z^{2}-2z+1)/(z^{2}+2z+1)
+**Example for 2nd Order:** $a_{2} s^{2} → a_{2}(2/T)^{2}(z-1)^{2}/(z+1)^{2} → a^{2}(4/T^{2})(z^{2}-2z+1)/(z^{2}+2z+1)
 
 ```
 a₂s² → a₂(2/T)²(z-1)²/(z+1)² → a₂(4/T²)(z²-2z+1)/(z²+2z+1)
