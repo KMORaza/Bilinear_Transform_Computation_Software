@@ -544,7 +544,7 @@ The inverse bilinear transform in the software converts a digital transfer funct
    - The roots of the numerator (zeros) and denominator (poles) of H(s) are computed using `PolynomialRootFinder.java`.
    - Special handling is applied for poles/zeros at z = -1, which map to s = infinity in the analog domain.
 - **Frequency Response**:
-   - The analog frequency response is computed by evaluating H(s) at s = jω, where w is the angular frequency (rad/s).
+   - The analog frequency response is computed by evaluating H(s) at $s = jω$, where w is the angular frequency (rad/s).
    - The magnitude (in dB) and phase are plotted in the `AnalogFrequencyResponsePanel`.
     
 ### _Model_
@@ -564,8 +564,8 @@ The inverse transform substitutes $z = (2 + sT)/(2 - sT)$ into H(z):
    - $z^{-k} = ((2 - sT) / (2 + sT))^{k}$
    - Let $u = sT$, so $z = (2 + u) / (2 - u)$, and $z^{-1} = (2 - u) / (2 + u)$.
    - For $z^{-k}$, compute $((2 - u) / (2 + u))^{k}$:
-     - Numerator: $(2 - u)^{k} = sum_{i=0}^{k} binomial(k, i) * 2^{k-i)} * (-u)^{i}$
-     - Denominator: $(2 + u)^{-k} = (2 + u)^{k} = sum_{j=0}^{k} binomial(k, j) * 2^{k-j} * u^j$ 
+     - Numerator: $(2 - u)^{k} = Σ_{i=0}^{k} binomial(k, i) * 2^{k-i)} * (-u)^{i}$
+     - Denominator: $(2 + u)^{-k} = (2 + u)^{k} = Σ_{j=0}^{k} binomial(k, j) * 2^{k-j} * u^j$ 
      - Combine to form a polynomial in u (and thus s).
 2. **Polynomial Expansion**:
    - Each term $b_{k}*z^{-k}$ in N(z) becomes a polynomial in s after substitution.
@@ -612,10 +612,10 @@ The stability feedback evaluates the stability of a digital filter by analyzing 
      - Update x = x - Correction
    - After finding a root, deflate the polynomial: $P(z) = (z - r) * Q(z)$, where Q(z) is computed via synthetic division (though the current implementation has issues with complex roots).
 ### _Nyquist Plot_
-   - Evaluate H(z) at z = e^{jω}:
+   - Evaluate $H(z)$ at $z = e^{jω}$:
      - $H(e^{jω}) = N(e^{jω}) / D(e^{jω})$
-     - $N(e^{jω}) = sum(b_k * cos(ωk) - j*sin(ωk))$
-     - $D(e^{jω}) = sum(a_k * cos(ωk) - j*sin(ωk))$
+     - $N(e^{jω}) = Σ(b_k * cos(ωk) - j*sin(ωk))$
+     - $D(e^{jω}) = Σ(a_k * cos(ωk) - j*sin(ωk))$
    - Plot $Re[H(e^{jω})]$ vs. $Im[H(e^{jω})]$ for ω from 0 to 2π.
    - Stability is assessed by checking if the curve encircles the point (-1, 0). For a stable system with no open-loop poles outside the unit circle, the curve should not encircle (-1, 0).
 ### _Pole-Zero Plot_
@@ -624,7 +624,7 @@ The stability feedback evaluates the stability of a digital filter by analyzing 
    - The unit circle is drawn as $x^2 + y^2 = 1$.
 ### _Stability Criterion_
    - A digital filter is stable if all poles of $H(z) = N(z) / D(z)$ lie inside the unit circle, i.e., $|p_i| < 1$ for all poles $p_i$.
-   - The software uses $|p_i| < 1 - EPSILON$ to ensure strict stability, where $EPSILON = 1e-10$.
+   - The software uses $|p_i| < 1 - EPSILON$ to ensure strict stability, where `EPSILON = 1e-10`.
 
 ---
 
@@ -646,14 +646,13 @@ The class operates by transforming the analog transfer function $H(s) = N(s)/D(s
 
 ### _Polynomial Computation_
    - For a polynomial $P(s) = a_n * s^n + ... + a_0$, substitute $s = (2/T) * (z-1)/(z+1)$.
-   - This results in $P(z) = a_n *((2/T)*(z-1)/(z+1))^{n} + ... + a_0$.
+   - This results in $P(z) = a_n * ((2/T) * (z-1)/(z+1))^{n} + ... + a_0$.
    - Expand each term $((z-1)/(z+1))^{k}$ using binomial coefficients:
      - $(z-1)^{k} = sum_{i=0}^{k} [binomial(k, i) * z^i * (-1)^{k-i}]$
      - $(z+1)^{-k} = (1/(z+1))^{k}$, approximated via polynomial division or direct expansion.
    - Combine terms to form the final numerator $N(z)$ and denominator $D(z)$.
 
 ### _Output Form
-atting_
    - Normalizes the resulting coefficients (removes leading zeros).
    - Displays the digital transfer function with coefficients formatted to a specified precision (default 4 decimal places).
    - Includes a string representation of the transfer function in the form $H(z) = (b_{m}z^{m} + ... + b_{0})/(a_{n}z^{n} + ... + a_{0})$.
@@ -734,7 +733,7 @@ The Time Domain Simulation serves the following purposes:
   - $a_{k}$ are the denominator coefficients (excluding $a_{0}$).
   - $x[n-k]$ are past and current input samples.
   - $y[n-k]$ are past output samples.
-- For each sample $n$ ($0$ to $NUM_SAMPLES-1$):
+- For each sample $n$ (`0` to `NUM_SAMPLES-1`):
   - Feedforward term: $Σ_{k=0}^M b_{k} * x[n-k]$
   - Feedback term: $Σ_{k=1}^N a_{k} * y[n-k]$
   - $y[n] = (feedforward - feedback) / a_{0}$
