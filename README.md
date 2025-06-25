@@ -301,7 +301,7 @@ The transform creates a non-linear frequency mapping between analog (Ω) and dig
 2. Avoids aliasing through non-linear frequency compression
 3. One-to-one mapping between analog and digital domains
 ### _Direct Transformation Method_
-1. **Input**: Analog transfer function coefficients $[a_{n}, a{n-1},...a_{0}]$, $[b_{m}, b_{m-1},...b_{0}]$
+1. **Input**: Analog transfer function coefficients $[a_{n}, a_{n-1},...a_{0}]$, $[b_{m}, b_{m-1},...b_{0}]$
 2. **Substitution**:
    - Replace each 's' term with $(2/T)(z-1)/(z+1)$
    - Multiply through by $(z+1)^{N}$ to clear denominators
@@ -318,6 +318,7 @@ The transform creates a non-linear frequency mapping between analog (Ω) and dig
 3. Combine like terms
 
 **Example for 2nd Order:** $a_{2}s^{2} → a_{2}(2/T)^{2}(z-1)^{2}/(z+1)^{2} → a^{2}(4/T^{2})(z^{2}-2z+1)/(z^{2}+2z+1)
+
 ```
 a₂s² → a₂(2/T)²(z-1)²/(z+1)² → a₂(4/T²)(z²-2z+1)/(z²+2z+1)
 ```
@@ -431,7 +432,7 @@ where $ω_c$ is the desired digital cutoff frequency and $Ω_c$ is the pre-warpe
 The frequency response analysis module computes the magnitude and phase response of digital filters derived via the bilinear transform. It evaluates the transfer function H(z) along the unit circle (z = e^(jω)) to determine how the filter affects different frequency components.  
 
 ### _Evaluate Transfer Function on Unit Circle_
-Given a discrete-time transfer function: $H(z) = (b_{0} + b_{1}z^{-1} + ... + b_{n}z^{-n))/(a_{0} + a_{1}z^{-1} + ... + a_{m}z^{-m})$
+Given a discrete-time transfer function: $H(z) = (b_{0} + b_{1}z^{-1} + ... + b_{n}z^{-n}))/(a_{0} + a_{1}z^{-1} + ... + a_{m}z^{-m})$
 ```
 H(z) = (b₀ + b₁z⁻¹ + ... + bₙz⁻ⁿ) / (a₀ + a₁z⁻¹ + ... + aₘz⁻ᵐ)  
 ```
@@ -610,14 +611,14 @@ The stability feedback evaluates the stability of a digital filter by analyzing 
      - Correction = $n/(G ± sqrt((n-1)*(n*H - G^2)))$
      - Update x = x - Correction
    - After finding a root, deflate the polynomial: $P(z) = (z - r) * Q(z)$, where Q(z) is computed via synthetic division (though the current implementation has issues with complex roots).
-### Nyquist Plot:
+### _Nyquist Plot_
    - Evaluate H(z) at z = e^{jω}:
      - $H(e^{jω}) = N(e^{jω}) / D(e^{jω})$
      - $N(e^{jω}) = sum(b_k * cos(ωk) - j*sin(ωk))$
      - $D(e^{jω}) = sum(a_k * cos(ωk) - j*sin(ωk))$
    - Plot $Re[H(e^{jω})]$ vs. $Im[H(e^{jω})]$ for ω from 0 to 2π.
    - Stability is assessed by checking if the curve encircles the point (-1, 0). For a stable system with no open-loop poles outside the unit circle, the curve should not encircle (-1, 0).
-### Pole-Zero Plot
+### _Pole-Zero Plot_
    - Poles are roots of $D(z) = 0$, zeros are roots of $N(z) = 0$.
    - Plot each pole/zero as a point $(Re[z], Im[z])$ in the z-plane.
    - The unit circle is drawn as $x^2 + y^2 = 1$.
@@ -625,11 +626,111 @@ The stability feedback evaluates the stability of a digital filter by analyzing 
    - A digital filter is stable if all poles of $H(z) = N(z) / D(z)$ lie inside the unit circle, i.e., $|p_i| < 1$ for all poles $p_i$.
    - The software uses $|p_i| < 1 - EPSILON$ to ensure strict stability, where $EPSILON = 1e-10$.
 
+---
 
+## ⑦ Direct Bilinear Mapping Engine
 
+The `DirectBilinearMappingEngine` class in the provides a graphical interface to compute and display the results of applying the bilinear transform to an analog transfer function. The bilinear transform converts an analog filter (in the s-domain) to a digital filter (in the z-domain) using the substitution $s = (2/T)*(z-1)/(z+1)$, where `T` is the sampling period. This class differs from `BilinearTransform.java` by using an explicit polynomial expansion approach to compute the digital transfer function.
 
+The class operates by transforming the analog transfer function $H(s) = N(s)/D(s)$ into a digital transfer function $H(z) = N(z)/D(z)$ using the bilinear transform. 
 
+### _Input Validation_
+   - Parses the coefficient strings into `double` arrays, handling invalid formats via try-catch blocks.
+   - Ensures $T > 0$ to avoid division by zero in the bilinear transform formula.
+   - Creates a `SymbolicTransferFunction` object with the parsed coefficients and variable `s` (analog domain).
 
+### _Bilinear Transform Application_
+   - Substitutes $s = (2/T)*(z-1)/(z+1)$ into the transfer function.
+   - Expands the resulting rational function by computing the numerator and denominator polynomials in the z-domain.
+   - Uses binomial expansion to handle powers of $(z-1)$ and $(z+1)$ in the substitution.
+
+### _Polynomial Computation_
+   - For a polynomial $P(s) = a_n * s^n + ... + a_0$, substitute $s = (2/T) * (z-1)/(z+1)$.
+   - This results in $P(z) = a_n *((2/T)*(z-1)/(z+1))^{n} + ... + a_0$.
+   - Expand each term $((z-1)/(z+1))^{k}$ using binomial coefficients:
+     - $(z-1)^{k} = sum_{i=0}^{k} [binomial(k, i) * z^i * (-1)^{k-i}]$
+     - $(z+1)^{-k} = (1/(z+1))^{k}$, approximated via polynomial division or direct expansion.
+   - Combine terms to form the final numerator $N(z)$ and denominator $D(z)$.
+
+### _Output Form
+atting_
+   - Normalizes the resulting coefficients (removes leading zeros).
+   - Displays the digital transfer function with coefficients formatted to a specified precision (default 4 decimal places).
+   - Includes a string representation of the transfer function in the form $H(z) = (b_{m}z^{m} + ... + b_{0})/(a_{n}z^{n} + ... + a_{0})$.
+
+### _Model_
+- The bilinear transform is defined as: $s = (2/T)*(z-1)/(z+1)$
+where:
+  - $s$ is the complex frequency in the analog domain.
+  - $z$ is the complex variable in the digital domain.
+  - $T$ is the sampling period (in seconds).
+
+- For an analog transfer function: $H(s) = N(s)/D(s) = (b_{m}s^{m}+b_{m-1}s^{m-1} + ... + b_{0})/(a_{n}s^{n} + a_{n-1}s^{n-1} + ... + a_{0})$
+
+```
+H(s) = N(s) / D(s) = (b_m s^m + b_(m-1) s^(m-1) + ... + b_0) / (a_n s^n + a_(n-1) s^(n-1) + ... + a_0)
+```
+the digital transfer function is $H(z) = N(z)/D(z)$ where $N(z)$ and $D(z)$ are polynomials in $z$ derived by substituting $s = (2/T) * (z-1)/(z+1)$ into $N(s)$ and $D(s)$.
+
+- For a term $s^k$ in the polynomial: $s^{k} = ((2/T)*(z-1)/(z+1))^{k} = (2/T)^{k}*(z-1)^{k}/(z+1)^{k}$
+
+```
+s^k = ((2/T) * (z-1)/(z+1))^k = (2/T)^k * (z-1)^k / (z+1)^k
+```
+  - **Numerator of the term**: $(z-1)^{k} = sum_{i=0}^{k} [binomial(k, i) * z^{i}*(-1)^{k-i}]$.
+  - **Denominator of the term**: $(z+1)^{k}$, which contributes to the common denominator.
+  - **Binomial coefficient**: $binomial(n, k) = n!/(k!*(n-k)!)$.
+
+- The final $N(z)$ and $D(z)$ are computed by:
+  1. Expanding each term in $N(s)$ and $D(s)$ after substitution.
+  2. Collecting like terms (same powers of $z$) across all expansions.
+  3. Normalizing the resulting polynomials to remove leading zeros.
+
+- Normalization: Coefficients with magnitude less than `EPSILON` (typically $1e-10$) are treated as zero to avoid numerical noise.
+
+## ⑧ Time Domain Simulation in Bilinear Transform Computation Software
+
+### _Functionality_
+The Time Domain Simulation serves the following purposes:
+1. **Compute Responses**: Calculates the filter's output for impulse, step, or custom inputs using the difference equation derived from the transfer function.
+2. **Visualize Responses**: Displays the response as a plot of amplitude versus sample index, with dynamic scaling and animation.
+3. **User Interaction**: Allows users to input custom sequences, control animation (play/pause), and reset the plot.
+4. **Precision Control**: Formats numerical labels based on a user-specified precision parameter.
+
+### _Logic_
+- **Key Parameters**
+  - `tf`: The `SymbolicTransferFunction` defining the filter’s numerator and denominator polynomials.
+  - `precision`: Controls the number of decimal places for y-axis labels.
+  - `NUM_SAMPLES = 50`: Fixed number of samples for the response (could be made configurable).
+  - `ANIMATION_DELAY = 100`: Time between animation frames (in milliseconds).
+  - `EPSILON = 1e-10`: Threshold for numerical comparisons (e.g., avoiding division by zero).
+- **Response Computation**
+   - Each `ResponsePanel` computes its response using the `computeDifferenceEquation` method, which implements the difference equation based on the transfer function’s numerator and denominator.
+   - The input sequence (`x`) varies by panel:
+     - **Impulse**: `x[0] = 1`, `x[n] = 0` for n > 0.
+     - **Step**: `x[n] = 1` for all n.
+     - **Custom Input**: Parsed from a comma-separated text field (e.g., "1, 0.5, 0.25, 0").
+   - The output sequence (`response`) is computed for `NUM_SAMPLES` points and stored for plotting.
+- **Animation**
+   - A `Timer` updates the plot every `ANIMATION_DELAY` (100ms), incrementing the `currentSample` index to display the response progressively.
+   - Users can pause/resume animation using a "Play/Pause" button or reset it to the start with a "Reset" button.
+   - If `currentSample` reaches `NUM_SAMPLES`, the animation pauses automatically.
+- **Visualization**
+   - The `paintComponent` method in `ResponsePanel` draws the plot:
+     - **Axes**: X-axis (sample index, 0 to 49), Y-axis (amplitude, scaled dynamically).
+     - **Grid**: 10x10 grid for reference.
+     - **Data**: Plots the response up to `currentSample` as a line graph.
+     - **Labels**: X-axis labeled with sample indices, Y-axis with amplitude values formatted to `precision` decimal places (or scientific notation for large/small values).
+     - **Title**: Displays the response type (e.g., "Impulse Response").
+
+### _Models_
+- The computation is based on the difference equation for a digital filter defined by its transfer function $H(z) = B(z)/A(z)$, where:
+  - $B(z)$ is the numerator polynomial: $b(M) * z^M + b(M-1) * z^{M-1} + ... + b(0)$.
+  - $A(z)$ is the denominator polynomial: $a(N) * z^N + a(N-1) * z^{N-1} + ... + a(0)$.
+  - $b(k)$ and $a(k)$ are the coefficients, and $a(N)$ is the leading denominator coefficient (assumed non-zero).
+
+- The filter’s output y(n) at time step n is calculated as: $y[n] = (1/a_{0}) * (sum_{k=0}^{M} b_{k} * x[n-k] - sum_{k=1}^{N} a_{k} * y[n-k])$
+  
 
 
 
