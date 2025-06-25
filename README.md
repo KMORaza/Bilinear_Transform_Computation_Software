@@ -447,7 +447,7 @@ where:
 ### _Compute Real and Imaginary Components_  
 Decompose numerator and denominator into real/imaginary parts:  
 - $Re_{num} = Σb_{k}*cos(ωk), Im_{num} = -Σb_{k}*sin(ωk)$
-- Re_{den} = Σa_{k}*cos(ωk), Im_{den} = -Σa_{k}*sin(ωk)$
+- $Re_{den} = Σa_{k}*cos(ωk), Im_{den} = -Σa_{k}*sin(ωk)$
 ```
 Re_num = Σbₖ*cos(ωk), Im_num = -Σbₖ*sin(ωk) (Numerator)
 Re_den = Σaₖ*cos(ωk), Im_den = -Σaₖ*sin(ωk) (Denominator)  
@@ -486,8 +486,8 @@ To counteract frequency warping, critical frequencies are pre-warped: $Ω_{analo
 Ω_analog = (2/T) tan(ω_digital / 2)  
 ```
 where:  
-- $Ω_analog$ = analog frequency (rad/s)  
-- $ω_digital$ = digital frequency (rad/sample)  
+- $Ω_{analog}$ = analog frequency (rad/s)  
+- $ω_{digital}$ = digital frequency (rad/sample)  
 - $T$ = sampling period  
 
 ### _Frequency Response of Analog Prototypes_
@@ -555,8 +555,8 @@ The inverse bilinear transform is based on the following key equation:
   $- z = (2 + sT) / (2 - sT)$
 
 For a digital transfer function $H(z) = N(z) / D(z)$, where:
-- $N(z) = b_0 + b_1*z^{-1} + b_2*z^{-2} + ... + b_M*z^{-M}$
-- $D(z) = a_0 + a_1*z^{-1} + a_2*z^{-2} + ... + a_N*z^{-N}$
+- $N(z) = b_0 + b_{1}z^{-1} + b_{2}z^{-2} + ... + b_{M}z^{-M}$
+- $D(z) = a_0 + a_{1}z^{-1} + a_{2}z^{-2} + ... + a_{N}z^{-N}$
 
 The inverse transform substitutes $z = (2 + sT)/(2 - sT)$ into H(z):
 
@@ -579,10 +579,10 @@ The inverse transform substitutes $z = (2 + sT)/(2 - sT)$ into H(z):
    - If $p = -1$, the pole maps to s = infinity, which is handled by reducing the polynomial degree.
    - Zeros are mapped similarly.
 5. **Frequency Response**:
-   - For H(s), evaluate at s = j*w:
-     - Magnitude = $|H(j*w)| = sqrt(Re[H(j*w)]^{2} + Im[H(j*w)]^{2})$
-     - Magnitude in dB = $20 * log10(|H(j*w)|)$
-     - Phase = $atan2(Im[H(j*w)], Re[H(j*w)])$
+   - For H(s), evaluate at s = j*ω:
+     - Magnitude = $|H(jω)| = sqrt(Re[H(jω)]^{2} + Im[H(jω)]^{2})$
+     - Magnitude in dB = $20 * log10(|H(ω)|)$
+     - Phase = $atan2(Im[H(jω)], Re[H(jω)])$
 6. **Example**
 For a digital transfer function $H(z) = (1 + 0.5z^{-1}) / (1 - 0.3z^{-1})$ with $T = 1$:
 - Substitute $z = (2 + s)/(2 - s)$.
@@ -601,14 +601,14 @@ The stability feedback evaluates the stability of a digital filter by analyzing 
    - The `isStable()` method checks if all poles have magnitude less than 1 - EPSILON (EPSILON = 1e-10).
    - Poles and zeros are computed using `computePoles()` and `computeZeros()`, which call `findRoots()`.
 ### _Pole and Zero Computation_
-   - For a polynomial $P(z) = a_{0}*z^{n} + a_1*z^{n-1} + ... + an$, find roots by solving $P(z) = 0$.
+   - For a polynomial $P(z) = a_{0}z^{n} + a_{1}z^{n-1} + ... + an$, find roots by solving $P(z) = 0$.
    - Laguerre’s method iteratively refines a root estimate x using:
      - $P(x)$ = evaluate polynomial at x
      - $P'(x)$ = first derivative: $P'(x) = n*a_0*z^{n-1} + (n-1)*a_1*z^{n-2} + ... + a_{n-1}
      - $P''(x)$ = second derivative: $P''(x) = n*(n-1)*a_0*z^{n-2} + (n-1)*(n-2)*a_1*z^{n-3} + ...$
      - $G = P'(x) / P(x)$
      - $H = G^2 - P''(x) / P(x)$
-     - Correction = $n/(G ± sqrt((n-1)*(n*H - G^2)))$
+     - Correction = $n/(G ± sqrt((n-1)*(nH - G^2)))$
      - Update x = x - Correction
    - After finding a root, deflate the polynomial: $P(z) = (z - r) * Q(z)$, where Q(z) is computed via synthetic division (though the current implementation has issues with complex roots).
 ### _Nyquist Plot_
